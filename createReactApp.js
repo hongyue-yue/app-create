@@ -44,8 +44,7 @@ if (program.info) {
         System: ["OS", "CPU"],
         Binaries: ["Node", "npm", "Yarn"],
         Browsers: ["Chrome", "Edge", "Internet Explorer", "Firefox", "Safari"],
-        npmPackages: ["react", "react-dom", "react-scripts"],
-        npmGlobalPackages: ["create-react-app"]
+        npmGlobalPackages: ["app-create"]
       },
       {
         duplicates: true,
