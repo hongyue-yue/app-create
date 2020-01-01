@@ -13,7 +13,7 @@
     "node": ">=8.0.0"
   },
   "bin": {
-    "react-app-create": "./index.js"
+    "app-create": "./index.js"
   },
   "scripts": {
     "build": "babel index.js -d lib --ignore '**/__tests__/' "
