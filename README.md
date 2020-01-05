@@ -13,12 +13,16 @@
 2. 创建项目
 
 ```
+  //默认react app
 　app-create <projectName> //如　app-create my-app
+
+　//创建vue app
+  app-create <projectName>　--veu //如　app-create my-app --vue
 ```
 
 3. 安装 dependencies
 
 ```
 　cd <projectName>
-  npm i 或　yarn
+  npm i 或　yarn　或　cnpm i
 ```

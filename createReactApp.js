@@ -29,6 +29,7 @@ const program = new commander.Command(packageJson.name)
   .action(name => {
     projectName = name;
   })
+  .option("--vue", "default react app,could create vue app")
   .option("--verbose", "print additional logs")
   .option("--info", "print environment debug info")
   .option("--use-npm", "mandatory use of NPM initial app")
@@ -69,9 +70,15 @@ if (typeof projectName === "undefined") {
   process.exit(1);
 }
 
-createApp(projectName, program.verbose, program.scriptsVersion, program.useNpm);
+createApp(
+  projectName,
+  program.vue,
+  program.verbose,
+  program.scriptsVersion,
+  program.useNpm
+);
 
-async function createApp(name, verbose, version, useNpm) {
+async function createApp(name, useVue, verbose, version, useNpm) {
   const root = path.resolve(name);
   const appName = path.basename(root);
 
@@ -79,12 +86,12 @@ async function createApp(name, verbose, version, useNpm) {
   //checkGit();
   fs.ensureDirSync(name);
   //checkingDirectoryExists(root, name);
-
+  console.log(`Installing ${chalk.cyan(useVue)} ...`);
   const useYarn = useNpm ? false : shouldUseYarn();
   if (!useYarn && !checkThatNpmCanReadCwd()) {
     process.exit(1);
   }
-  if (!useYarn) {
+  if (useNpm) {
     checkNpmVersion();
   }
   try {
@@ -108,20 +115,29 @@ async function createApp(name, verbose, version, useNpm) {
   );
   const originalDirectory = process.cwd();
   process.chdir(root);
-  run(root, appName, version, verbose, originalDirectory, useYarn);
+  run(root, appName, useVue, version, verbose, originalDirectory, useYarn);
 }
 
 async function run(
   root,
   appName,
+  useVue,
   version,
   verbose,
   originalDirectory,
   useYarn
 ) {
-  const packageToInstall = getInstallPackage(version, originalDirectory);
-  const packageName = getPackageInfo(packageToInstall);
-  console.log(`Installing ${chalk.cyan(packageName)} ...`);
+  const packageToInstall = getInstallPackage(
+    useVue,
+    version,
+    originalDirectory
+  );
+  // const packageName = getPackageInfo(packageToInstall);
+  // console.log(`Installing ${chalk.cyan(packageName)} ...`);
+  let templateName = "react-template";
+  if (useVue) {
+    templateName = "vue-template";
+  }
   console.log(`Installing ${chalk.cyan(process.cwd())} ...`);
   try {
     await install(root, useYarn, [packageToInstall], verbose);
@@ -131,7 +147,7 @@ async function run(
   const scriptsPath = path.resolve(
     process.cwd(),
     "node_modules",
-    "template",
+    templateName,
     "scripts",
     "init.js"
   );
@@ -139,8 +155,12 @@ async function run(
   init(root, appName, verbose, originalDirectory, useYarn);
 }
 
-function getInstallPackage(version, originalDirectory) {
-  let packageToInstall = "https://github.com/qinyueshang/template.git";
+function getInstallPackage(useVue, version, originalDirectory) {
+  let packageToInstall = "https://github.com/qinyueshang/react-template.git"; //react template
+  if (useVue) {
+    packageToInstall = "https://github.com/qinyueshang/vue-template.git";
+  }
+
   const validSemver = semver.valid(version);
   if (validSemver) {
     packageToInstall += `@${validSemver}`;
@@ -159,6 +179,7 @@ function getInstallPackage(version, originalDirectory) {
   return packageToInstall;
 }
 function getPackageInfo(installPackage) {
+  console.log(`Installing ${chalk.cyan(installPackage)} ...`);
   if (installPackage.indexOf("git+") === 0) {
     // Pull package name out of git urls
     return installPackage.match(/([^/]+)\.git(#.*)?$/)[1];
@@ -228,7 +249,7 @@ function checkNpmVersion() {
       .toString()
       .trim();
     hasMinNpm = semver.gte(npmVersion, "5.0.0");
-
+    console.log(chalk.yellow(`npm version ${npmVersion}`));
     if (!hasMinNpm && npmVersion) {
       console.log(
         chalk.yellow(
