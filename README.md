@@ -19,7 +19,7 @@
 　app-create <projectName> //如　app-create my-app
 
 　//创建vue app
-  app-create <projectName>　--veu //如　app-create my-app --vue
+  app-create <projectName>　--vue //如　app-create my-app --vue
 ```
 
 3. 安装 dependencies
