@@ -39,8 +39,7 @@ const program = new commander.Command(packageJson.name)
 
 if (program.info) {
   console.log(chalk.bold("\nEnvironment Info:"));
-  return envinfo
-    .run(
+  envinfo.run(
       {
         System: ["OS", "CPU"],
         Binaries: ["Node", "npm", "Yarn"],

@@ -5,7 +5,7 @@
     "react"
   ],
   "description": "create a app ",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "qinyueshang",
   "license": "MIT",
   "private": true,
@@ -16,7 +16,7 @@
     "app-create": "./index.js"
   },
   "scripts": {
-    "build": "babel index.js -d lib --ignore '**/__tests__/' "
+    "build": "bili "
   },
   "dependencies": {
     "chalk": "2.4.2",
@@ -28,7 +28,6 @@
     "validate-npm-package-name": "3.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7"
+    "bili": "^5.0.5"
   }
 }
