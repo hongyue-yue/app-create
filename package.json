@@ -13,7 +13,7 @@
     "node": ">=8.0.0"
   },
   "bin": {
-    "app-create": "./dist/index.js"
+    "app-create": "./lib/index.js"
   },
   "scripts": {
     "build": "bili "
