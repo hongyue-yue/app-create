@@ -1,6 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var chalk = _interopDefault(require('chalk'));
+var commander = _interopDefault(require('commander'));
+var dns = _interopDefault(require('dns'));
+var envinfo = _interopDefault(require('envinfo'));
+var child_process = require('child_process');
+var fs = _interopDefault(require('fs-extra'));
+var os = _interopDefault(require('os'));
+var path = _interopDefault(require('path'));
+var semver$1 = _interopDefault(require('semver'));
+var spawn = _interopDefault(require('cross-spawn'));
+var validateProjectName = _interopDefault(require('validate-npm-package-name'));
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -33,12 +47,6 @@ function _arrayLikeToArray(arr, len) {
 function _nonIterableSpread() {
   throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-
-/**
- * @author qinyueshang
- * @date 2019-12-03 16:37:38
- * @Description: Do not modify
- */
 
 function _empty() {}
 
@@ -120,7 +128,7 @@ function _callIgnored(body, direct) {
   return _call(body, _empty, direct);
 }
 
-var chalk = require("chalk");
+var packageJson = require("../package.json");
 
 function _catch(body, recover) {
   try {
@@ -136,13 +144,15 @@ function _catch(body, recover) {
   return result;
 }
 
-var commander = require("commander");
+var projectName;
 
 function _continue(value, then) {
   return value && value.then ? value.then(then) : then(value);
 }
 
-var dns = require("dns");
+var program = new commander.Command(packageJson.name).version(packageJson.version).arguments("<project-directory>").usage("".concat(chalk.green("<project-directory>"), " [options]")).action(function (name) {
+  projectName = name;
+}).option("--vue", "default react app,could create vue app").option("--verbose", "print additional logs").option("--info", "print environment debug info").option("--use-npm", "mandatory use of NPM initial app").option("--scripts-version", "template version").allowUnknownOption().parse(process.argv);
 
 function _async(f) {
   return function () {
@@ -158,34 +168,11 @@ function _async(f) {
   };
 }
 
-var envinfo = require("envinfo");
-
 function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
 }
-
-var execSync = require("child_process").execSync;
-
-var fs = require("fs-extra");
-
-var os = require("os");
-
-var path = require("path");
-
-var semver = require("semver");
-
-var spawn = require("cross-spawn");
-
-var validateProjectName = require("validate-npm-package-name");
-
-var packageJson = require("./package.json");
-
-var projectName;
-var program = new commander.Command(packageJson.name).version(packageJson.version).arguments("<project-directory>").usage("".concat(chalk.green("<project-directory>"), " [options]")).action(function (name) {
-  projectName = name;
-}).option("--vue", "default react app,could create vue app").option("--verbose", "print additional logs").option("--info", "print environment debug info").option("--use-npm", "mandatory use of NPM initial app").option("--scripts-version", "template version").allowUnknownOption().parse(process.argv);
 
 if (program.info) {
   console.log(chalk.bold("\nEnvironment Info:"));
@@ -220,7 +207,7 @@ function getInstallPackage(useVue, version, originalDirectory) {
     packageToInstall = "https://github.com/qinyueshang/vue-template.git";
   }
 
-  var validSemver = semver.valid(version);
+  var validSemver = semver$1.valid(version);
 
   if (validSemver) {
     packageToInstall += "@".concat(validSemver);
@@ -274,7 +261,7 @@ function install(root, useYarn, dependencies, verbose) {
 
 function shouldUseYarn() {
   try {
-    execSync("yarnpkg --version", {
+    child_process.execSync("yarnpkg --version", {
       stdio: "ignore"
     });
     return true;
@@ -288,8 +275,8 @@ function checkNpmVersion() {
   var npmVersion = null;
 
   try {
-    npmVersion = execSync("npm --version").toString().trim();
-    hasMinNpm = semver.gte(npmVersion, "5.0.0");
+    npmVersion = child_process.execSync("npm --version").toString().trim();
+    hasMinNpm = semver$1.gte(npmVersion, "5.0.0");
     console.log(chalk.yellow("npm version ".concat(npmVersion)));
 
     if (!hasMinNpm && npmVersion) {
@@ -393,8 +380,8 @@ function checkAppName(appName) {
 }
 
 var currentNodeVersion = process.versions.node;
-var semver$1 = currentNodeVersion.split(".");
-var major = semver$1[0];
+var semver = currentNodeVersion.split(".");
+var major = semver[0];
 
 if (major < 8) {
   console.error("You are running Node " + currentNodeVersion + ".\n" + "Create React App requires Node 8 or higher. \n" + "Please update your version of Node.");

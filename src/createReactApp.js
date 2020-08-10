@@ -1,24 +1,24 @@
+#!/usr/bin/env node
 /**
  * @author qinyueshang
  * @date 2019-12-03 16:37:38
  * @Description: Do not modify
  */
 
-"use strict";
 
-const chalk = require("chalk");
-const commander = require("commander");
-const dns = require("dns");
-const envinfo = require("envinfo");
-const execSync = require("child_process").execSync;
-const fs = require("fs-extra");
+import chalk from 'chalk'
+import commander from 'commander'
+import dns from 'dns'
+import envinfo from 'envinfo'
+import {execSync} from 'child_process'
+import fs from 'fs-extra'
+import os from 'os'
+import path from 'path'
+import semver from 'semver'
+import spawn from 'cross-spawn'
+import validateProjectName from 'validate-npm-package-name'
 
-const os = require("os");
-const path = require("path");
-const semver = require("semver");
-const spawn = require("cross-spawn");
-const validateProjectName = require("validate-npm-package-name");
-const packageJson = require("./package.json");
+const packageJson = require("../package.json");
 
 let projectName;
 
