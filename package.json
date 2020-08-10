@@ -5,7 +5,7 @@
     "react"
   ],
   "description": "create a app ",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "author": "qinyueshang",
   "license": "MIT",
   "private": true,
